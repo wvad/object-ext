@@ -1,0 +1,16 @@
+{
+  "name": "object-ext",
+  "version": "0.1.12",
+  "description": "the Object ext",
+  "main": "index.js",
+  "dependencies": {
+    "bindings": "^1.5.0"
+  },
+  "typings": "index.d.ts",
+  "scripts": { "install": "node-gyp rebuild" },
+  "keywords": [ "object", "ext", "get", "info" ],
+  "repository": "https://github.com/kage-sakura/object-ext.git",
+  "author": "kage-sakura",
+  "license": "MIT",
+  "gypfile": true
+}
