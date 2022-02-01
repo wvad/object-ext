@@ -34,6 +34,7 @@ void GetInfo(FunctionArgumnents args) {
       Local<Array> checked = maybeEntries.ToLocalChecked();
       uint32_t length = checked->Length() / 2;
       Local<Array> entries = Array::New(isolate, length);
+      SetObjectProperty(entries, "isKeyValue", Boolean::New(isolate, true));
       for (uint32_t i = 0; i < length; i++) {
         Local<Value> key = checked->Get(context, i * 2).ToLocalChecked();
         Local<Value> value = checked->Get(context, i * 2 + 1).ToLocalChecked();
@@ -44,6 +45,8 @@ void GetInfo(FunctionArgumnents args) {
       }
       SetObjectProperty(info, "entries", entries);
     } else {
+      Local<Array> entries = maybeEntries.ToLocalChecked();
+      SetObjectProperty(entries, "isKeyValue", Boolean::New(isolate, false));
       SetObjectProperty(info, "entries", maybeEntries.ToLocalChecked());
     }
   }
@@ -146,6 +149,14 @@ void HasRealProperty(FunctionArgumnents args) {
   args.GetReturnValue().Set(false);
 }
 
+void GetAddress(FunctionArgumnents args) {
+  if (!args[0]->IsExternal()) return;
+  Isolate *isolate = args.GetIsolate();
+  void *address = args[0].As<External>()->Value();
+  std::string addressStr = std::to_string(reinterpret_cast<uintptr_t>(address));
+  args.GetReturnValue().Set(ToV8String(isolate, addressStr.data()));
+}
+
 void structuredClone(FunctionArgumnents args) {
   if (!args[0]->IsObject()) return;
   Isolate *isolate = args.GetIsolate();
@@ -195,6 +206,7 @@ void init(Local<Object> exports) {
   addMethodToObject(exports, "setAccessor", SetAccessor, 4);
   addMethodToObject(exports, "hasRealProperty", HasRealProperty, 2);
   addMethodToObject(exports, "sameContextStructuredClone", structuredClone, 1);
+  addMethodToObject(exports, "getAddress", GetAddress, 1);
 }
 
 NODE_MODULE(addon, init)
