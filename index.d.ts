@@ -31,7 +31,7 @@ export function setAccessor(target: Object, name: string | symbol, getter: Funct
 
 export function hasRealProperty(target: Object, name: any): "indexed" | "named" | "namedCallback" | false;
 
-export function getInfo(target: Object): ObjectInformation;
+export function getInfo(target: Object): ObjectInformation | ObjectInformationWithValueEntries | ObjectInformationWithKeyValueEntries;
 
 export function getAddress(externalObject: unknown): string | undefined;
 
