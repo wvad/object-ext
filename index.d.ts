@@ -1,5 +1,6 @@
 type ObjectInformation = {
   entries: undefined,
+  internalFields: unknown[],
   className: string,
   id: number,
   isCallable: boolean,
@@ -9,6 +10,7 @@ type ObjectInformation = {
 
 type ObjectInformationWithValueEntries = {
   entries: unknown[] & { isKeyValue: false },
+  internalFields: unknown[],
   className: string,
   id: number,
   isCallable: boolean,
@@ -18,6 +20,7 @@ type ObjectInformationWithValueEntries = {
 
 type ObjectInformationWithKeyValueEntries = {
   entries: [unknown, unknown][] & { isKeyValue: true }
+  internalFields: unknown[],
   className: string,
   id: number,
   isCallable: boolean,
