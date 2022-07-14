@@ -4,18 +4,18 @@ using namespace v8;
 
 typedef const FunctionCallbackInfo<Value> &FunctionArgumnents;
 
-Local<String> ToV8String(Isolate *isolate, const char *str) {
+inline Local<String> ToV8String(Isolate *isolate, const char *str) {
   return String::NewFromUtf8(isolate, str, NewStringType::kNormal).ToLocalChecked();
 }
 
-void SetObjectProperty(Local<Object> obj, const char *name, Local<Value> value) {
+inline void SetObjectProperty(Local<Object> obj, const char *name, Local<Value> value) {
   Isolate *isolate = obj->GetIsolate();
   Local<Context> context = isolate->GetCurrentContext();
-  obj->Set(context, ToV8String(isolate, name), value);
+  obj->Set(context, ToV8String(isolate, name), value).Check();
 }
 
-void SetObjectProperty(Local<Object> obj, uint32_t index, Local<Value> value) {
-  obj->Set(obj->GetIsolate()->GetCurrentContext(), index, value);
+inline void SetObjectProperty(Local<Object> obj, uint32_t index, Local<Value> value) {
+  obj->Set(obj->GetIsolate()->GetCurrentContext(), index, value).Check();
 }
 
 void GetInfo(FunctionArgumnents args) {
@@ -50,6 +50,11 @@ void GetInfo(FunctionArgumnents args) {
       SetObjectProperty(info, "entries", maybeEntries.ToLocalChecked());
     }
   }
+
+  int internalFieldCount = obj->InternalFieldCount();
+  Local<Array> internalFields = Array::New(isolate, internalFieldCount);
+  for (int i = 0; i < internalFieldCount; i++) SetObjectProperty(internalFields, i, obj->GetInternalField(i));
+  SetObjectProperty(info, "internalFields", internalFields);
 
   Local<String> className = obj->GetConstructorName();
   if (!className.IsEmpty()) SetObjectProperty(info, "className", className);
