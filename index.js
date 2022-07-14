@@ -7,6 +7,5 @@ const native = require('bindings')('addon');
   "setAccessor",
   "hasRealProperty",
   "getInfo",
-  "getAddress",
   "sameContextStructuredClone"
 ].forEach(name => (exports[name] = native[name]));

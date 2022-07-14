@@ -46,6 +46,7 @@ console.log(hasRealProperty(proxy, 'prop1'));
   internalFields: [],
   className: 'WeakSet',
   id: 961779,
+  external: undefined,
   isCallable: false,
   isConstructor: false,
   isApiWrapper: false

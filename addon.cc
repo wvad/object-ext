@@ -62,6 +62,14 @@ void GetInfo(FunctionArgumnents args) {
   int id = obj->GetIdentityHash();
   SetObjectProperty(info, "id", Number::New(isolate, id));
 
+  if (args[0]->IsExternal()) {
+    void *address = args[0].As<External>()->Value();
+    std::string addressStr = std::to_string(reinterpret_cast<uintptr_t>(address));
+    SetObjectProperty(info, "external", ToV8String(isolate, addressStr.data()));
+  } else {
+    SetObjectProperty(info, "external", Undefined(isolate));
+  }
+
   bool isCallable = obj->IsCallable();
   SetObjectProperty(info, "isCallable", Boolean::New(isolate, isCallable));
 
@@ -154,14 +162,6 @@ void HasRealProperty(FunctionArgumnents args) {
   args.GetReturnValue().Set(false);
 }
 
-void GetAddress(FunctionArgumnents args) {
-  if (!args[0]->IsExternal()) return;
-  Isolate *isolate = args.GetIsolate();
-  void *address = args[0].As<External>()->Value();
-  std::string addressStr = std::to_string(reinterpret_cast<uintptr_t>(address));
-  args.GetReturnValue().Set(ToV8String(isolate, addressStr.data()));
-}
-
 void structuredClone(FunctionArgumnents args) {
   if (!args[0]->IsObject()) return;
   Isolate *isolate = args.GetIsolate();
@@ -211,7 +211,6 @@ void init(Local<Object> exports) {
   addMethodToObject(exports, "setAccessor", SetAccessor, 4);
   addMethodToObject(exports, "hasRealProperty", HasRealProperty, 2);
   addMethodToObject(exports, "sameContextStructuredClone", structuredClone, 1);
-  addMethodToObject(exports, "getAddress", GetAddress, 1);
 }
 
 NODE_MODULE(addon, init)
